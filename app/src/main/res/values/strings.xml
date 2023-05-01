@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Divisions</string>
+    <string name="title_home">Inicio</string>
+    <string name="title_settings">Ajustes</string>
+    <string name="title_notifications">Notificationes</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="Welcome">Bienvenido</string>
+    <string name="Login">Iniciar Sesión</string>
+    <string name="Register">Regístrarse</string>
+    <string name="Email">Correo</string>
+    <string name="Password">Contraseña</string>
+</resources>
