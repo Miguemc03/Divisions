@@ -9,4 +9,6 @@
     <string name="Register">Regístrarse</string>
     <string name="Email">Correo</string>
     <string name="Password">Contraseña</string>
+    <string name="Username">Nombre de usuario</string>
+    <string name="Continue">Continuar</string>
 </resources>

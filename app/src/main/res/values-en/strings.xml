@@ -10,4 +10,6 @@
     <string name="Register">Sign In</string>
     <string name="Email">Email</string>
     <string name="Password">Password</string>
+    <string name="Username">Username</string>
+    <string name="Continue">Continue</string>
 </resources>
