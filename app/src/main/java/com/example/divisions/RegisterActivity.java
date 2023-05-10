@@ -166,8 +166,9 @@ public class RegisterActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("inicio",true);
+            editor.putString("usuario",editextUsername.getText().toString());
             editor.commit();
-            Intent main = new Intent(RegisterActivity.this,MainActivity.class);
+            Intent main = new Intent(RegisterActivity.this,TeamActivity.class);
             startActivity(main);
         }
     }

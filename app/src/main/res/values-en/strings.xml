@@ -12,4 +12,5 @@
     <string name="Password">Password</string>
     <string name="Username">Username</string>
     <string name="Continue">Continue</string>
+    <string name="Saludo">Hola, elige tu equipo favorito</string>
 </resources>

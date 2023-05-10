@@ -11,4 +11,5 @@
     <string name="Password">Contraseña</string>
     <string name="Username">Nombre de usuario</string>
     <string name="Continue">Continuar</string>
+    <string name="Saludo">Hola, elige tu equipo favorito</string>
 </resources>
