@@ -2,8 +2,10 @@ package com.example.divisions;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -171,7 +173,6 @@ public class TeamActivity extends AppCompatActivity {
                 }
                 AdaptadorEquipos adaptadorEquipos = new AdaptadorEquipos(TeamActivity.this, R.layout.equipos, listaEquiposString);
                 listViewEquipos.setAdapter(adaptadorEquipos);
-
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }

@@ -12,4 +12,6 @@
     <string name="Username">Nombre de usuario</string>
     <string name="Continue">Continuar</string>
     <string name="Saludo">Hola, elige tu equipo favorito</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
