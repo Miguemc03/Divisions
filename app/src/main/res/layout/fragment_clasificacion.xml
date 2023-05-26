@@ -49,12 +49,12 @@
 
     <ListView
         android:id="@+id/ListViewClasificacion"
-        android:layout_width="387dp"
-        android:layout_height="533dp"
+        android:layout_width="359dp"
+        android:layout_height="528dp"
         android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.204" />
+        app:layout_constraintVertical_bias="0.216" />
 </androidx.constraintlayout.widget.ConstraintLayout>
