@@ -1,4 +1,4 @@
-package com.example.divisions;
+package com.miguelangelmoreno.divisions;
 
 import android.content.Context;
 

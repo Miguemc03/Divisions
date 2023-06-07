@@ -1,9 +1,10 @@
-package com.example.divisions;
+package com.miguelangelmoreno.divisions;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.divisions.ui.dashboard.SettingsFragment;
+import com.example.divisions.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
         editextEmail = findViewById(R.id.editTextEmailLogin);
         editTextPassword = findViewById(R.id.editTextPasswordLogin);
@@ -50,12 +55,14 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (editTextPassword.getText().length() == 0) {
                     Toast.makeText(LoginActivity.this, "La contraseña no puede estar vacia", Toast.LENGTH_SHORT).show();
                 } else {
+
                     DescargarJSON descargarJSON = new DescargarJSON();
                     descargarJSON.execute(SERVIDOR + "comprobarCorreo.php?dato=" + editextEmail.getText(), SERVIDOR + "comprobarContraseña.php?dato=" + editextEmail.getText());
                 }
             }
         });
     }
+
 
     private class DescargarJSON extends AsyncTask<String, Void, Void> {
         String todo = "";
@@ -68,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(LoginActivity.this);
+            progreso = new ProgressDialog(LoginActivity.this);
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
@@ -164,19 +171,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private class ObtenerUsuario extends AsyncTask<Void, Void, Void> {
-        String usuario="";
+        String usuario = "";
         ProgressDialog progreso;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(LoginActivity.this);
+            progreso = new ProgressDialog(LoginActivity.this);
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
             progreso.setCancelable(false);
             progreso.show();
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
 
@@ -211,15 +219,144 @@ public class LoginActivity extends AppCompatActivity {
             super.onPostExecute(unused);
             SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("inicio", true);
             editor.putString("usuario", usuario);
+            editor.commit();
+
+            ComprobarToken comprobarToken = new ComprobarToken();
+            comprobarToken.execute();
+
+
+        }
+    }
+
+    private class ComprobarToken extends AsyncTask<Void, Void, Void> {
+        String token = "";
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso = new ProgressDialog(LoginActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+
+            String ruta = "https://miguedb.000webhostapp.com/comprobarToken.php?dato=" + editextEmail.getText();
+            URL url;
+            HttpURLConnection httpURLConnection;
+            try {
+                url = new URL(ruta);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    String linea = "";
+                    while ((linea = br.readLine()) != null) {
+                        token += linea + "\n";
+
+                    }
+                }
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+
+            SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+            String tokenBueno=sharedPreferences.getString("DEVICEID", null);
+            Log.v("tokenBueno",tokenBueno+"");
+            if (tokenBueno.compareTo(token) != 0) {
+
+                CambiarToken cambiarToken = new CambiarToken();
+                cambiarToken.execute(tokenBueno);
+            } else {
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                token=sharedPreferences.getString("DEVICEID", null);
+                editor.putBoolean("inicio", true);
+                editor.putString("correo", editextEmail.getText().toString());
+                editor.commit();
+                progreso.dismiss();
+                Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(main);
+            }
+
+
+        }
+    }
+
+    private class CambiarToken extends AsyncTask<String, Void, Void> {
+
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso = new ProgressDialog(LoginActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String token = strings[0];
+            String ruta = "https://miguedb.000webhostapp.com/CambiarToken.php?correo=" + editextEmail.getText()+"&token="+token;
+            URL url;
+            HttpURLConnection httpURLConnection;
+            Log.v("token",token);
+
+            try {
+                url = new URL(ruta);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    String linea = "";
+
+                }
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("inicio", true);
             editor.putString("correo", editextEmail.getText().toString());
             editor.commit();
             progreso.dismiss();
             Intent main = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(main);
 
+
         }
     }
+
 
 }

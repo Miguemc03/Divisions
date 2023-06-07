@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1025803380141",
+    "project_id": "divisions-b161d",
+    "storage_bucket": "divisions-b161d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025803380141:android:016e54d5fa40436514ed24",
+        "android_client_info": {
+          "package_name": "com.miguelangelmoreno.divisions"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1025803380141-gvdcoqs943t8j3pgc0qfu98dsksku2nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKspLVGkA4b0okM9zuNEvMVnUkA67joJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1025803380141-gvdcoqs943t8j3pgc0qfu98dsksku2nu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

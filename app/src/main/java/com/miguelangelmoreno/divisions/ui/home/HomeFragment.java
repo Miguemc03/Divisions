@@ -1,4 +1,4 @@
-package com.example.divisions.ui.home;
+package com.miguelangelmoreno.divisions.ui.home;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,17 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.divisions.LeagueFragment;
 import com.example.divisions.R;
 import com.example.divisions.databinding.FragmentHomeBinding;
 import com.squareup.picasso.Picasso;

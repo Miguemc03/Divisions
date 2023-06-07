@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.divisions.ui.home.HomeFragment"
+        android:name="com.miguelangelmoreno.divisions.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -19,17 +19,17 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.divisions.ui.dashboard.SettingsFragment"
+        android:name="com.miguelangelmoreno.divisions.ui.dashboard.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.divisions.ui.notifications.NotificationsFragment"
+        android:name="com.miguelangelmoreno.divisions.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/leagueFragment"
-        android:name="com.example.divisions.LeagueFragment"
+        android:name="com.miguelangelmoreno.divisions.LeagueFragment"
         tools:layout="@layout/fragment_league"/>
 </navigation>

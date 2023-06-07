@@ -1,4 +1,4 @@
-package com.example.divisions.ui.home;
+package com.miguelangelmoreno.divisions.ui.home;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,7 +20,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.divisions.R;
-import com.example.divisions.TeamActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;

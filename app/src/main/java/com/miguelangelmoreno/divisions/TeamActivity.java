@@ -1,8 +1,7 @@
-package com.example.divisions;
+package com.miguelangelmoreno.divisions;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -22,7 +21,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.divisions.ui.home.HomeFragment;
+import com.example.divisions.R;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -55,11 +54,12 @@ public class TeamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team);
+        getSupportActionBar().hide();
         listViewEquipos = findViewById(R.id.ListViewEquipos);
         spinnerLigas = findViewById(R.id.SpinnerLigaEquipos);
         saludoUsuario = findViewById(R.id.textViewNombreSaludo);
         SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
-        String usuario = sharedPreferences.getString("usuario","null");
+        String usuario = sharedPreferences.getString("usuario", "null");
         saludoUsuario.setText(usuario);
         arrayLigas = new ArrayList<>();
         arrayEquipos = new ArrayList<>();
@@ -86,12 +86,58 @@ public class TeamActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("equipo",listaEquipos.get(position).getIdEquipo());
+                editor.putString("equipo", listaEquipos.get(position).getIdEquipo());
                 editor.commit();
-                Intent main = new Intent(TeamActivity.this, MainActivity.class);
-                startActivity(main);
+                GuardarEquipo guardarEquipo = new GuardarEquipo();
+                guardarEquipo.execute(listaEquipos.get(position).getIdEquipo());
+
             }
         });
+    }
+
+    private class GuardarEquipo extends AsyncTask<String, Void, Void> {
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso = new ProgressDialog(TeamActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String idequipo = strings[0];
+            SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+            String usuario=sharedPreferences.getString("usuario",null);
+            Log.v("usuario",usuario);
+            Log.v("equipo",idequipo);
+            String ruta = "https://miguedb.000webhostapp.com/GuardarEquipo.php?nick="+usuario+"&equipo="+idequipo;
+            URL url;
+            HttpURLConnection httpURLConnection;
+            try {
+                url = new URL(ruta);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                }
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            Intent main = new Intent(TeamActivity.this, MainActivity.class);
+            startActivity(main);
+        }
     }
 
     private class DescargarEquipos extends AsyncTask<Void, Void, Void> {
@@ -102,16 +148,17 @@ public class TeamActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(TeamActivity.this);
+            progreso = new ProgressDialog(TeamActivity.this);
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
             progreso.setCancelable(false);
             progreso.show();
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
-            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key="+APIKEY+"&format=json&req=tables&league="+listaLigas.get(spinnerLigas.getSelectedItemPosition()).getIdLiga();
+            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&format=json&req=tables&league=" + listaLigas.get(spinnerLigas.getSelectedItemPosition()).getIdLiga();
 
             URL url;
             HttpURLConnection httpURLConnection;
@@ -136,8 +183,8 @@ public class TeamActivity extends AppCompatActivity {
                         todo = todo.substring(4);
                     }
 
-                    Log.v("palabra",palabra);
-                    Log.v("todo",todo);
+                    Log.v("palabra", palabra);
+                    Log.v("todo", todo);
 
                     jsonObject = new JSONObject(todo);
 
@@ -164,21 +211,21 @@ public class TeamActivity extends AppCompatActivity {
                 Log.v("jsonObject", jsonArray.length() + "");
                 String nombre = "", idEquipo = "", escudo = "";
                 for (int i = 0; i < jsonArray.length(); i++) {
-                        if (jsonArray.getJSONObject(i).getString("team") != null) {
-                            nombre = jsonArray.getJSONObject(i).getString("team");
-                        }
-                        if (jsonArray.getJSONObject(i).getString("id") != null) {
-                            idEquipo = jsonArray.getJSONObject(i).getString("id");
-                        }
-                        if (jsonArray.getJSONObject(i).getString("shield") != null) {
-                            escudo = jsonArray.getJSONObject(i).getString("shield");
+                    if (jsonArray.getJSONObject(i).getString("team") != null) {
+                        nombre = jsonArray.getJSONObject(i).getString("team");
+                    }
+                    if (jsonArray.getJSONObject(i).getString("id") != null) {
+                        idEquipo = jsonArray.getJSONObject(i).getString("id");
+                    }
+                    if (jsonArray.getJSONObject(i).getString("shield") != null) {
+                        escudo = jsonArray.getJSONObject(i).getString("shield");
 
-                        }
-                        Log.v("Nombre", nombre + " " + idEquipo + " " + escudo);
-                        Equipos equipos = new Equipos(idEquipo, nombre, escudo);
-                        listaEquiposString.add(nombre);
-                        listaEquipos.add(equipos);
-                        arrayEquipos.add(equipos);
+                    }
+                    Log.v("Nombre", nombre + " " + idEquipo + " " + escudo);
+                    Equipos equipos = new Equipos(idEquipo, nombre, escudo);
+                    listaEquiposString.add(nombre);
+                    listaEquipos.add(equipos);
+                    arrayEquipos.add(equipos);
 
 
                 }
@@ -199,13 +246,14 @@ public class TeamActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(TeamActivity.this);
+            progreso = new ProgressDialog(TeamActivity.this);
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
             progreso.setCancelable(false);
             progreso.show();
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
             String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&tz=Europe/Madrid&req=categories&filter=my_leagues&format=json";
@@ -293,10 +341,12 @@ public class TeamActivity extends AppCompatActivity {
         public AdaptadorEquipos(@NonNull Context context, int resource, List<String> lista) {
             super(context, resource, lista);
         }
+
         @Override
         public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             return getView(position, convertView, parent);
         }
+
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

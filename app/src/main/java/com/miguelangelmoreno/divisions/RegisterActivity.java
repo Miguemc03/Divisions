@@ -1,4 +1,4 @@
-package com.example.divisions;
+package com.miguelangelmoreno.divisions;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.divisions.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_register);
         editextUsername=findViewById(R.id.editTextUsername);
         editextEmail=findViewById(R.id.editTextEmail);
@@ -136,10 +139,11 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void unused) {
 
-
+            SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+            String token=sharedPreferences.getString("DEVICEID",null);
             if (jsonArray.length()==0 && jsonArray2.length()==0 && editTextPassword.getText().length()!=0){
                 Insertar insertar = new Insertar();
-                insertar.execute(SERVIDOR+"insertar.php?nick="+editextUsername.getText().toString()+"&correo="+editextEmail.getText().toString()+"&password="+editTextPassword.getText().toString());
+                insertar.execute(SERVIDOR+"insertar.php?nick="+editextUsername.getText().toString()+"&correo="+editextEmail.getText().toString()+"&password="+editTextPassword.getText().toString()+"&token="+token);
 
             }
             else {

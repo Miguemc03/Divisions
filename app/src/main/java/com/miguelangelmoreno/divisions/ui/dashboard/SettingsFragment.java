@@ -1,4 +1,4 @@
-package com.example.divisions.ui.dashboard;
+package com.miguelangelmoreno.divisions.ui.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,17 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.divisions.EditarBaseFragment;
-import com.example.divisions.MainActivity;
-import com.example.divisions.R;
-import com.example.divisions.RegisterActivity;
-import com.example.divisions.StartActivity;
-import com.example.divisions.TeamActivity;
-import com.example.divisions.databinding.FragmentHomeBinding;
 import com.example.divisions.databinding.FragmentSettingsBinding;
+import com.miguelangelmoreno.divisions.EditarBaseFragment;
+import com.example.divisions.R;
+import com.miguelangelmoreno.divisions.StartActivity;
 
 public class SettingsFragment extends Fragment {
 

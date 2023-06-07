@@ -1,4 +1,4 @@
-package com.example.divisions.ui.notifications;
+package com.miguelangelmoreno.divisions.ui.notifications;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

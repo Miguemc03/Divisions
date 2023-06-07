@@ -1,12 +1,12 @@
-package com.example.divisions;
+package com.miguelangelmoreno.divisions;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.divisions.ui.home.ClasificacionFragment;
-import com.example.divisions.ui.home.PartidosFragment;
+import com.miguelangelmoreno.divisions.ui.home.ClasificacionFragment;
+import com.miguelangelmoreno.divisions.ui.home.PartidosFragment;
 
 public class MyViewPagerAdapter extends FragmentStateAdapter {
     String idLiga;

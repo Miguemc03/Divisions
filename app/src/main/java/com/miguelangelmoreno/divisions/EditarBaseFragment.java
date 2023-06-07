@@ -1,4 +1,4 @@
-package com.example.divisions;
+package com.miguelangelmoreno.divisions;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,12 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.divisions.ui.dashboard.SettingsFragment;
-import com.example.divisions.ui.home.PartidosFragment;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.divisions.R;
+import com.miguelangelmoreno.divisions.ui.dashboard.SettingsFragment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,8 +28,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.

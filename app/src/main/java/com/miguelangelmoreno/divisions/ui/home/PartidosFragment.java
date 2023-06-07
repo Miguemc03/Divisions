@@ -1,4 +1,4 @@
-package com.example.divisions.ui.home;
+package com.miguelangelmoreno.divisions.ui.home;
 
 import android.app.ProgressDialog;
 import android.content.Context;

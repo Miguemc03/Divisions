@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context=".ui.home.ClasificacionFragment">
+    tools:context="com.miguelangelmoreno.divisions.ui.home.ClasificacionFragment">
 
     <TextView
         android:id="@+id/textView5"
