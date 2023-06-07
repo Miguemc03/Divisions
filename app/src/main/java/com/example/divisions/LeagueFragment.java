@@ -6,14 +6,16 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
 
+import com.example.divisions.ui.home.HomeFragment;
 import com.google.android.material.tabs.TabLayout;
 
 /**
@@ -71,39 +73,43 @@ public class LeagueFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_league, container, false);
     }
 
+
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     MyViewPagerAdapter myViewPagerAdapter;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-            tabLayout=view.findViewById(R.id.tabLayout);
-            viewPager2=view.findViewById(R.id.viewPager);
-            myViewPagerAdapter = new MyViewPagerAdapter(getActivity(),mParam1);
-            viewPager2.setAdapter(myViewPagerAdapter);
-            tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-                @Override
-                public void onTabSelected(TabLayout.Tab tab) {
-                    viewPager2.setCurrentItem(tab.getPosition());
-                }
+        mParam1 = HomeFragment.LigaEscogida;
+        Log.v("Parametro", mParam1 + "");
+        tabLayout = view.findViewById(R.id.tabLayout);
+        viewPager2 = view.findViewById(R.id.viewPager);
+        myViewPagerAdapter = new MyViewPagerAdapter(getActivity(), mParam1);
+        viewPager2.setAdapter(myViewPagerAdapter);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager2.setCurrentItem(tab.getPosition());
+            }
 
-                @Override
-                public void onTabUnselected(TabLayout.Tab tab) {
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-                }
+            }
 
-                @Override
-                public void onTabReselected(TabLayout.Tab tab) {
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-                }
-            });
-            viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                @Override
-                public void onPageSelected(int position) {
-                    super.onPageSelected(position);
-                    tabLayout.getTabAt(position).select();
-                }
-            });
+            }
+        });
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                tabLayout.getTabAt(position).select();
+            }
+        });
 
     }
 }

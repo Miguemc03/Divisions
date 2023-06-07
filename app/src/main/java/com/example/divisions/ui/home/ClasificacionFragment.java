@@ -1,11 +1,13 @@
 package com.example.divisions.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -58,17 +60,30 @@ public class ClasificacionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listViewEquipos=view.findViewById(R.id.ListViewClasificacion);
+        listViewEquipos = view.findViewById(R.id.ListViewClasificacion);
         DescargarEquipos equipos = new DescargarEquipos();
         equipos.execute();
     }
+
     private class DescargarEquipos extends AsyncTask<Void, Void, Void> {
         JSONObject jsonObject;
         String todo;
 
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso= new ProgressDialog(getContext());
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
         @Override
         protected Void doInBackground(Void... voids) {
-            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key="+APIKEY+"&format=json&req=tables&league="+idLiga;
+            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&format=json&req=tables&league=" + idLiga;
 
             URL url;
             HttpURLConnection httpURLConnection;
@@ -93,8 +108,8 @@ public class ClasificacionFragment extends Fragment {
                         todo = todo.substring(4);
                     }
 
-                    Log.v("palabra",palabra);
-                    Log.v("todo",todo);
+                    Log.v("palabra", palabra);
+                    Log.v("todo", todo);
 
                     jsonObject = new JSONObject(todo);
 
@@ -118,8 +133,7 @@ public class ClasificacionFragment extends Fragment {
             listaEquiposString.clear();
             try {
                 JSONArray jsonArray = jsonObject.getJSONArray("table");
-                Log.v("jsonObject", jsonArray.length() + "");
-                String nombre = "", pos = "", escudo = "",dG="",puntos="",pJ="";
+                String nombre = "", pos = "", escudo = "", dG = "", puntos = "", pJ = "",mark="";
                 for (int i = 0; i < jsonArray.length(); i++) {
                     if (jsonArray.getJSONObject(i).getString("team") != null) {
                         nombre = jsonArray.getJSONObject(i).getString("team");
@@ -144,7 +158,11 @@ public class ClasificacionFragment extends Fragment {
                         pJ = jsonArray.getJSONObject(i).getString("round");
 
                     }
-                    Clasificacion equipos = new Clasificacion(pos, nombre, escudo,pJ,dG,puntos);
+                    if (jsonArray.getJSONObject(i).get("mark") != null) {
+                        mark = jsonArray.getJSONObject(i).get("mark")+"";
+
+                    }
+                    Clasificacion equipos = new Clasificacion(pos, nombre, escudo, pJ, dG, puntos,mark);
                     listaEquiposString.add(nombre);
                     listaEquipos.add(equipos);
                     arrayEquipos.add(equipos);
@@ -156,16 +174,20 @@ public class ClasificacionFragment extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            progreso.dismiss();
         }
+
         private class AdaptadorEquipos extends ArrayAdapter<String> {
 
             public AdaptadorEquipos(@NonNull Context context, int resource, List<String> lista) {
                 super(context, resource, lista);
             }
+
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 return getView(position, convertView, parent);
             }
+
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -182,6 +204,36 @@ public class ClasificacionFragment extends Fragment {
 
                 nombre.setText(equipos.getNombre());
                 posicion.setText(equipos.getPosicion());
+                Log.v("Mark",equipos.getMark());
+                switch (equipos.getMark()) {
+                    case "1":
+                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.azulOscuro));
+                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        break;
+                    case "2":
+                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.azul));
+                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        break;
+                    case "3":
+                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.naranja));
+                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        break;
+                    case "5":
+                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.verde));
+                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        break;
+                    case "6":
+                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.rojo));
+                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        break;
+                    case "7":
+                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.rojo));
+                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                        break;
+                    default:
+                        break;
+                }
+
                 pJ.setText(equipos.getPartidosJugados());
                 dG.setText(equipos.getDiferenciaGoles());
                 puntos.setText(equipos.getPuntos());
@@ -197,14 +249,16 @@ public class ClasificacionFragment extends Fragment {
             String partidosJugados;
             String diferenciaGoles;
             String puntos;
+            String mark;
 
-            public Clasificacion(String posicion, String nombre, String escudo, String partidosJugados, String diferenciaGoles, String puntos) {
+            public Clasificacion(String posicion, String nombre, String escudo, String partidosJugados, String diferenciaGoles, String puntos, String mark) {
                 this.posicion = posicion;
                 this.nombre = nombre;
                 this.escudo = escudo;
                 this.partidosJugados = partidosJugados;
                 this.diferenciaGoles = diferenciaGoles;
                 this.puntos = puntos;
+                this.mark = mark;
             }
 
             public String getPosicion() {
@@ -229,6 +283,10 @@ public class ClasificacionFragment extends Fragment {
 
             public String getPuntos() {
                 return puntos;
+            }
+
+            public String getMark() {
+                return mark;
             }
         }
     }

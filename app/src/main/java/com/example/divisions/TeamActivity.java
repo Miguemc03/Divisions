@@ -97,7 +97,18 @@ public class TeamActivity extends AppCompatActivity {
     private class DescargarEquipos extends AsyncTask<Void, Void, Void> {
         JSONObject jsonObject;
         String todo;
+        ProgressDialog progreso;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso= new ProgressDialog(TeamActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
         @Override
         protected Void doInBackground(Void... voids) {
             String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key="+APIKEY+"&format=json&req=tables&league="+listaLigas.get(spinnerLigas.getSelectedItemPosition()).getIdLiga();
@@ -176,13 +187,25 @@ public class TeamActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            progreso.dismiss();
         }
     }
 
     private class DescargarLigas extends AsyncTask<Void, Void, Void> {
         JSONObject jsonObject;
         String todo;
+        ProgressDialog progreso;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso= new ProgressDialog(TeamActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
         @Override
         protected Void doInBackground(Void... voids) {
             String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&tz=Europe/Madrid&req=categories&filter=my_leagues&format=json";
@@ -261,6 +284,7 @@ public class TeamActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+            progreso.dismiss();
         }
     }
 

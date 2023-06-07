@@ -14,4 +14,8 @@
     <string name="Saludo">Hola, elige tu equipo favorito</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="CambiarPass">Cambiar contraseña</string>
+    <string name="CambiarUsu">Cambiar nombre usuario</string>
+    <string name="CambiarCorreo">Cambiar correo</string>
+    <string name="CerrarSesion">Cerrar sesión</string>
 </resources>

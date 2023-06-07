@@ -11,8 +11,10 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_navigation_home_to_leagueFragment"
-            app:destination="@id/leagueFragment" />
+            android:id="@+id/gotoleagueFragment"
+            app:destination="@id/leagueFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
@@ -29,9 +31,5 @@
     <fragment
         android:id="@+id/leagueFragment"
         android:name="com.example.divisions.LeagueFragment"
-        tools:layout="@layout/fragment_league">
-        <action
-            android:id="@+id/action_leagueFragment_to_navigation_home"
-            app:destination="@id/navigation_home" />
-    </fragment>
+        tools:layout="@layout/fragment_league"/>
 </navigation>

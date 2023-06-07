@@ -1,5 +1,6 @@
 package com.example.divisions.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -12,12 +13,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.divisions.LeagueFragment;
 import com.example.divisions.R;
@@ -45,6 +49,7 @@ public class HomeFragment extends Fragment {
     ArrayList<Ligas> arrayLigas = new ArrayList<>();
     ListView listViewligas;
     private FragmentHomeBinding binding;
+    public static String LigaEscogida;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,13 +82,17 @@ public class HomeFragment extends Fragment {
         listViewligas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
+                LigaEscogida=listaLigas.get(position).getIdLiga();
+                NavHostFragment.findNavController(HomeFragment.this).navigate(R.id.gotoleagueFragment);
+/*
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.LinearReemplazar,LeagueFragment.newInstance(listaLigas.get(position).getIdLiga(), ""))
                         .addToBackStack(null)
                         .commit();
+
+ */
             }
         });
         DescargarLigas descargarLigas = new DescargarLigas();
@@ -93,6 +102,18 @@ public class HomeFragment extends Fragment {
     private class DescargarLigas extends AsyncTask<Void, Void, Void> {
         JSONObject jsonObject;
         String todo;
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso= new ProgressDialog(getContext());
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
 
         @Override
         protected Void doInBackground(Void... voids) {
@@ -169,7 +190,7 @@ public class HomeFragment extends Fragment {
                 }
                 AdaptadorLigas adaptadorParaActividades = new AdaptadorLigas(getContext(), R.layout.ligas, listaLigasString);
                 listViewligas.setAdapter(adaptadorParaActividades);
-
+                progreso.dismiss();
 
             } catch (JSONException e) {
                 throw new RuntimeException(e);

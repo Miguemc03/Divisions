@@ -7,10 +7,9 @@
 
     <TextView
         android:id="@+id/textViewPos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="26dp"
+        android:layout_height="54dp"
+        android:gravity="center_horizontal|center_vertical"
         android:text="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,9 +17,9 @@
     <TextView
         android:id="@+id/textViewJugados"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_height="54dp"
         android:layout_marginEnd="85dp"
+        android:gravity="center_horizontal|center_vertical"
         android:text="J"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,9 +27,9 @@
     <TextView
         android:id="@+id/textViewDG"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_height="54dp"
         android:layout_marginEnd="55dp"
+        android:gravity="center_vertical"
         android:text="DG"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,9 +37,9 @@
     <TextView
         android:id="@+id/textViewPuntos"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_height="54dp"
         android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
         android:text="PTS"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +49,7 @@
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -58,9 +57,9 @@
     <TextView
         android:id="@+id/textViewNombreEquipo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/imageViewEscudo"
         app:layout_constraintTop_toTopOf="parent" />

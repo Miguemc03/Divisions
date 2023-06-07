@@ -1,5 +1,6 @@
 package com.example.divisions.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,7 +37,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -97,7 +101,7 @@ public class PartidosFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 DescargarPartidos descargarPartidos = new DescargarPartidos();
-                descargarPartidos.execute(position+"");
+                descargarPartidos.execute(position + "");
             }
 
             @Override
@@ -114,6 +118,7 @@ public class PartidosFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_partidos, container, false);
 
     }
+
     private class DescargarFechas extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -149,17 +154,26 @@ public class PartidosFragment extends Fragment {
                     JSONObject jsonObject = new JSONObject(todo);
                     JSONArray matchs = jsonObject.getJSONArray("match");
                     listaFechas.clear();
+                    String date;
                     for (int i = 0; i < matchs.length(); i++) {
 
-                        if (!listaFechas.contains(matchs.getJSONObject(i).getString("date"))){
-                            listaFechas.add(matchs.getJSONObject(i).getString("date"));
+                        if (!listaFechas.contains(matchs.getJSONObject(i).getString("date"))) {
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            String fecha = simpleDateFormat.format(new Date());
+
+                            if (fecha.compareTo(matchs.getJSONObject(i).getString("date")) == 0) {
+                                date = "Hoy";
+                            } else {
+                                date = matchs.getJSONObject(i).getString("date");
+                            }
+                            listaFechas.add(date);
 
                         }
 
 
                     }
                     for (int i = 0; i < listaFechas.size(); i++) {
-                        Log.v("fechas",listaFechas.get(i));
+                        Log.v("fechas", listaFechas.get(i));
 
                     }
                 }
@@ -182,6 +196,7 @@ public class PartidosFragment extends Fragment {
 
 
     }
+
     private class DescargarJornada extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -247,10 +262,21 @@ public class PartidosFragment extends Fragment {
     }
 
     private class DescargarPartidos extends AsyncTask<String, Void, Void> {
+        ProgressDialog progreso;
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso= new ProgressDialog(getContext());
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
+        @Override
         protected Void doInBackground(String... strings) {
-            String posFecha=strings[0];
+            String posFecha = strings[0];
             String fecha = listaFechas.get(Integer.parseInt(posFecha));
             String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&format=json&req=matchs&league=" + idLiga + "&tz=Europe/Madrid&round=" + jornadaActual;
 
@@ -286,22 +312,28 @@ public class PartidosFragment extends Fragment {
                     listaPartidos.clear();
                     listaPartidosString.clear();
 
-                    String equipo1,equipo2,idPartido,escudo1,escudo2,resultado,color="#FFFFFF";
+                    String equipo1, equipo2, idPartido, escudo1, escudo2, resultado, color;
                     for (int i = 0; i < matchs.length(); i++) {
-                        if (matchs.getJSONObject(i).getString("date").compareTo(fecha)==0){
-                            idPartido=matchs.getJSONObject(i).getString("id");
-                            equipo1=matchs.getJSONObject(i).getString("local");
-                            equipo2=matchs.getJSONObject(i).getString("visitor");
-                            escudo1=matchs.getJSONObject(i).getString("local_shield_png");
-                            escudo2=matchs.getJSONObject(i).getString("visitor_shield_png");
-                            if (matchs.getJSONObject(i).getString("status").compareTo("-1")==0){
-                                resultado=matchs.getJSONObject(i).getString("hour")+":"+matchs.getJSONObject(i).getString("minute");
+                        if (fecha.compareTo("Hoy") == 0) {
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            fecha = simpleDateFormat.format(new Date());
+                            Log.v("Fecha", fecha);
+
+
+                        }
+                        if (matchs.getJSONObject(i).getString("date").compareTo(fecha) == 0) {
+                            idPartido = matchs.getJSONObject(i).getString("id");
+                            equipo1 = matchs.getJSONObject(i).getString("local");
+                            equipo2 = matchs.getJSONObject(i).getString("visitor");
+                            escudo1 = matchs.getJSONObject(i).getString("local_shield_png");
+                            escudo2 = matchs.getJSONObject(i).getString("visitor_shield_png");
+                            if (matchs.getJSONObject(i).getString("status").compareTo("-1") == 0) {
+                                resultado = matchs.getJSONObject(i).getString("hour") + ":" + matchs.getJSONObject(i).getString("minute");
+                            } else {
+                                resultado = matchs.getJSONObject(i).getString("result");
                             }
-                            else {
-                                resultado=matchs.getJSONObject(i).getString("result");
-                            }
-                            color=matchs.getJSONObject(i).getString("status");
-                            Partidos partidos= new Partidos(idPartido,equipo1,equipo2,escudo1,escudo2,resultado,color);
+                            color = matchs.getJSONObject(i).getString("status");
+                            Partidos partidos = new Partidos(idPartido, equipo1, equipo2, escudo1, escudo2, resultado, color);
                             listaPartidosString.add(idPartido);
                             listaPartidos.add(partidos);
                             arrayPartidos.add(partidos);
@@ -329,17 +361,21 @@ public class PartidosFragment extends Fragment {
             super.onPostExecute(unused);
             AdaptadorPartidos adaptadorPartidos = new AdaptadorPartidos(getContext(), R.layout.partidos, listaPartidosString);
             listViewPartidos.setAdapter(adaptadorPartidos);
+            progreso.dismiss();
         }
     }
+
     private class AdaptadorPartidos extends ArrayAdapter<String> {
 
         public AdaptadorPartidos(@NonNull Context context, int resource, List<String> lista) {
             super(context, resource, lista);
         }
+
         @Override
         public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             return getView(position, convertView, parent);
         }
+
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -358,15 +394,15 @@ public class PartidosFragment extends Fragment {
             nombre1.setText(partidos.getNombreEquipo1());
             nombre2.setText(partidos.getNombreEquipo2());
             resultado.setText(partidos.getResultado());
-            switch (partidos.getColor()){
+            switch (partidos.getColor()) {
                 case "-1":
-                    resultado.setTextColor(ContextCompat.getColor(getContext(),R.color.black));
+                    resultado.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
                     break;
                 case "0":
-                    resultado.setTextColor(ContextCompat.getColor(getContext(),R.color.verde));
+                    resultado.setTextColor(ContextCompat.getColor(getContext(), R.color.verde));
                     break;
                 default:
-                    resultado.setTextColor(ContextCompat.getColor(getContext(),R.color.rojo));
+                    resultado.setTextColor(ContextCompat.getColor(getContext(), R.color.rojo));
                     break;
             }
 
@@ -385,7 +421,7 @@ public class PartidosFragment extends Fragment {
         String resultado;
         String color;
 
-        public Partidos(String idPartido, String nombreEquipo1, String nombreEquipo2, String escudo1, String escudo2, String resultado,String color) {
+        public Partidos(String idPartido, String nombreEquipo1, String nombreEquipo2, String escudo1, String escudo2, String resultado, String color) {
             this.idPartido = idPartido;
             this.nombreEquipo1 = nombreEquipo1;
             this.nombreEquipo2 = nombreEquipo2;

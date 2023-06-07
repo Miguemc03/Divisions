@@ -2,6 +2,7 @@ package com.example.divisions;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -63,6 +64,18 @@ public class RegisterActivity extends AppCompatActivity {
         String todo2="";
         JSONArray jsonArray;
         JSONArray jsonArray2;
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso= new ProgressDialog(RegisterActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
 
         @Override
         protected Void doInBackground(String... strings) {
@@ -138,6 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
             }
+            progreso.dismiss();
         }
     }
     private class Insertar extends AsyncTask<String,Void,Void>{
@@ -167,6 +181,7 @@ public class RegisterActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("inicio",true);
             editor.putString("usuario",editextUsername.getText().toString());
+            editor.putString("correo", editextEmail.getText().toString());
             editor.commit();
             Intent main = new Intent(RegisterActivity.this,TeamActivity.class);
             startActivity(main);
