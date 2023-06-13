@@ -152,11 +152,6 @@ public class HomeFragment extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
             listaLigas.clear();
             arrayLigas.clear();
             listaLigasString.clear();
@@ -184,13 +179,19 @@ public class HomeFragment extends Fragment {
                     }
 
                 }
+            } catch (JSONException ex) {
+                throw new RuntimeException(ex);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+
                 AdaptadorLigas adaptadorParaActividades = new AdaptadorLigas(getContext(), R.layout.ligas, listaLigasString);
                 listViewligas.setAdapter(adaptadorParaActividades);
                 progreso.dismiss();
 
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 

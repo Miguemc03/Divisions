@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,6 +86,7 @@ public class EditarBaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mParam1=getArguments().getString("param");
         editTextCambiarDatos = view.findViewById(R.id.editTextCambiarDatos);
         buttonCambiarDatos = view.findViewById(R.id.buttonCambiarDatos);
         editTextCambiarDatos.setHint(mParam1);
@@ -160,11 +162,8 @@ public class EditarBaseFragment extends Fragment {
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
             progreso.dismiss();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().
-                    replace(R.id.Cambio2Layout, new SettingsFragment()).
-                    addToBackStack(null).
-                    commit();
+            NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
+
         }
     }
 
@@ -223,11 +222,7 @@ public class EditarBaseFragment extends Fragment {
             editor.putBoolean("inicio", true);
             editor.putString("usuario", editTextCambiarDatos.getText().toString());
             editor.commit();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().
-                    replace(R.id.Cambio2Layout, new SettingsFragment()).
-                    addToBackStack(null).
-                    commit();
+            NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
         }
     }
 
@@ -286,11 +281,7 @@ public class EditarBaseFragment extends Fragment {
             editor.putBoolean("inicio", true);
             editor.putString("correo", editTextCambiarDatos.getText().toString());
             editor.commit();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().
-                    replace(R.id.Cambio2Layout, new SettingsFragment()).
-                    addToBackStack(null).
-                    commit();
+            NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
         }
     }
 

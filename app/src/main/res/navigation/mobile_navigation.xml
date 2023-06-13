@@ -21,15 +21,28 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.miguelangelmoreno.divisions.ui.dashboard.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_editarBaseFragment"
+            app:destination="@id/editarBaseFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.miguelangelmoreno.divisions.ui.notifications.NotificationsFragment"
+        android:id="@+id/navigation_team"
+        android:name="com.miguelangelmoreno.divisions.ui.notifications.TeamFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_team" />
     <fragment
         android:id="@+id/leagueFragment"
         android:name="com.miguelangelmoreno.divisions.LeagueFragment"
         tools:layout="@layout/fragment_league"/>
+    <fragment
+        android:id="@+id/editarBaseFragment"
+        android:name="com.miguelangelmoreno.divisions.EditarBaseFragment"
+        android:label="fragment_editar_base"
+        tools:layout="@layout/fragment_editar_base" >
+        <action
+            android:id="@+id/action_editarBaseFragment_to_navigation_dashboard"
+            app:destination="@id/navigation_dashboard" />
+    </fragment>
 </navigation>

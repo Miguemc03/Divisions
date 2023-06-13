@@ -41,9 +41,9 @@ public class ClasificacionFragment extends Fragment {
     String idLiga;
     static final String APIKEY = "c6196c01e7c1d93932590f42beec9ef8";
     List<String> listaEquiposString = new ArrayList<>();
-    List<DescargarEquipos.Clasificacion> listaEquipos = new ArrayList<>();
+    List<Clasificacion> listaEquipos = new ArrayList<>();
     ListView listViewEquipos;
-    ArrayList<DescargarEquipos.Clasificacion> arrayEquipos = new ArrayList<>();
+    ArrayList<Clasificacion> arrayEquipos = new ArrayList<>();
 
     public ClasificacionFragment(String idLiga) {
         this.idLiga = idLiga;
@@ -73,13 +73,14 @@ public class ClasificacionFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(getContext());
+            progreso = new ProgressDialog(getContext());
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
             progreso.setCancelable(false);
             progreso.show();
         }
+
         @Override
         protected Void doInBackground(Void... voids) {
             String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&format=json&req=tables&league=" + idLiga;
@@ -123,16 +124,11 @@ public class ClasificacionFragment extends Fragment {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
             listaEquipos.clear();
             listaEquiposString.clear();
             try {
                 JSONArray jsonArray = jsonObject.getJSONArray("table");
-                String nombre = "", pos = "", escudo = "", dG = "", puntos = "", pJ = "",mark="";
+                String nombre = "", pos = "", escudo = "", dG = "", puntos = "", pJ = "", mark = "";
                 for (int i = 0; i < jsonArray.length(); i++) {
                     if (jsonArray.getJSONObject(i).getString("team") != null) {
                         nombre = jsonArray.getJSONObject(i).getString("team");
@@ -158,135 +154,144 @@ public class ClasificacionFragment extends Fragment {
 
                     }
                     if (jsonArray.getJSONObject(i).get("mark") != null) {
-                        mark = jsonArray.getJSONObject(i).get("mark")+"";
+                        mark = jsonArray.getJSONObject(i).get("mark") + "";
 
                     }
-                    Clasificacion equipos = new Clasificacion(pos, nombre, escudo, pJ, dG, puntos,mark);
+                    Clasificacion equipos = new Clasificacion(pos, nombre, escudo, pJ, dG, puntos, mark);
                     listaEquiposString.add(nombre);
                     listaEquipos.add(equipos);
                     arrayEquipos.add(equipos);
 
 
                 }
-                AdaptadorEquipos adaptadorEquipos = new AdaptadorEquipos(getContext(), R.layout.clasificacion, listaEquiposString);
-                listViewEquipos.setAdapter(adaptadorEquipos);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+            } catch (JSONException ex) {
+                throw new RuntimeException(ex);
             }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+
+            AdaptadorEquipos adaptadorEquipos = new AdaptadorEquipos(getContext(), R.layout.clasificacion, listaEquiposString);
+            listViewEquipos.setAdapter(adaptadorEquipos);
+
             progreso.dismiss();
         }
 
-        private class AdaptadorEquipos extends ArrayAdapter<String> {
 
-            public AdaptadorEquipos(@NonNull Context context, int resource, List<String> lista) {
-                super(context, resource, lista);
-            }
+    }
 
-            @Override
-            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                return getView(position, convertView, parent);
-            }
+    private class AdaptadorEquipos extends ArrayAdapter<String> {
 
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                LayoutInflater inflater = getLayoutInflater();
-                View miFila = inflater.inflate(R.layout.clasificacion, parent, false);
-                TextView posicion = miFila.findViewById(R.id.textViewPos);
-                TextView nombre = miFila.findViewById(R.id.textViewNombreEquipo);
-                ImageView logo = miFila.findViewById(R.id.imageViewEscudo);
-                TextView pJ = miFila.findViewById(R.id.textViewJugados);
-                TextView dG = miFila.findViewById(R.id.textViewDG);
-                TextView puntos = miFila.findViewById(R.id.textViewPuntos);
-
-                Clasificacion equipos = listaEquipos.get(position);
-
-                nombre.setText(equipos.getNombre());
-                posicion.setText(equipos.getPosicion());
-                Log.v("Mark",equipos.getMark());
-                switch (equipos.getMark()) {
-                    case "1":
-                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.azulOscuro));
-                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                        break;
-                    case "2":
-                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.azul));
-                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                        break;
-                    case "3":
-                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.naranja));
-                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                        break;
-                    case "5":
-                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.verde));
-                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                        break;
-                    case "6":
-                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.rojo));
-                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                        break;
-                    case "7":
-                        posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.rojo));
-                        posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
-                        break;
-                    default:
-                        break;
-                }
-
-                pJ.setText(equipos.getPartidosJugados());
-                dG.setText(equipos.getDiferenciaGoles());
-                puntos.setText(equipos.getPuntos());
-                Picasso.get().load(equipos.getEscudo()).into(logo);
-                return miFila;
-            }
+        public AdaptadorEquipos(@NonNull Context context, int resource, List<String> lista) {
+            super(context, resource, lista);
         }
 
-        class Clasificacion {
-            String posicion;
-            String nombre;
-            String escudo;
-            String partidosJugados;
-            String diferenciaGoles;
-            String puntos;
-            String mark;
+        @Override
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            return getView(position, convertView, parent);
+        }
 
-            public Clasificacion(String posicion, String nombre, String escudo, String partidosJugados, String diferenciaGoles, String puntos, String mark) {
-                this.posicion = posicion;
-                this.nombre = nombre;
-                this.escudo = escudo;
-                this.partidosJugados = partidosJugados;
-                this.diferenciaGoles = diferenciaGoles;
-                this.puntos = puntos;
-                this.mark = mark;
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            LayoutInflater inflater = getLayoutInflater();
+            View miFila = inflater.inflate(R.layout.clasificacion, parent, false);
+            TextView posicion = miFila.findViewById(R.id.textViewPos);
+            TextView nombre = miFila.findViewById(R.id.textViewNombreEquipo);
+            ImageView logo = miFila.findViewById(R.id.imageViewEscudo);
+            TextView pJ = miFila.findViewById(R.id.textViewJugados);
+            TextView dG = miFila.findViewById(R.id.textViewDG);
+            TextView puntos = miFila.findViewById(R.id.textViewPuntos);
+
+            Clasificacion equipos = listaEquipos.get(position);
+
+            nombre.setText(equipos.getNombre());
+            posicion.setText(equipos.getPosicion());
+            Log.v("Mark", equipos.getMark());
+            switch (equipos.getMark()) {
+                case "1":
+                    posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.azulOscuro));
+                    posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    break;
+                case "2":
+                    posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.azul));
+                    posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    break;
+                case "3":
+                    posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.naranja));
+                    posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    break;
+                case "5":
+                    posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.verde));
+                    posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    break;
+                case "6":
+                    posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.rojo));
+                    posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    break;
+                case "7":
+                    posicion.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.rojo));
+                    posicion.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+                    break;
+                default:
+                    break;
             }
 
-            public String getPosicion() {
-                return posicion;
-            }
+            pJ.setText(equipos.getPartidosJugados());
+            dG.setText(equipos.getDiferenciaGoles());
+            puntos.setText(equipos.getPuntos());
+            Picasso.get().load(equipos.getEscudo()).into(logo);
+            return miFila;
+        }
+    }
 
-            public String getNombre() {
-                return nombre;
-            }
+    class Clasificacion {
+        String posicion;
+        String nombre;
+        String escudo;
+        String partidosJugados;
+        String diferenciaGoles;
+        String puntos;
+        String mark;
 
-            public String getEscudo() {
-                return escudo;
-            }
+        public Clasificacion(String posicion, String nombre, String escudo, String partidosJugados, String diferenciaGoles, String puntos, String mark) {
+            this.posicion = posicion;
+            this.nombre = nombre;
+            this.escudo = escudo;
+            this.partidosJugados = partidosJugados;
+            this.diferenciaGoles = diferenciaGoles;
+            this.puntos = puntos;
+            this.mark = mark;
+        }
 
-            public String getPartidosJugados() {
-                return partidosJugados;
-            }
+        public String getPosicion() {
+            return posicion;
+        }
 
-            public String getDiferenciaGoles() {
-                return diferenciaGoles;
-            }
+        public String getNombre() {
+            return nombre;
+        }
 
-            public String getPuntos() {
-                return puntos;
-            }
+        public String getEscudo() {
+            return escudo;
+        }
 
-            public String getMark() {
-                return mark;
-            }
+        public String getPartidosJugados() {
+            return partidosJugados;
+        }
+
+        public String getDiferenciaGoles() {
+            return diferenciaGoles;
+        }
+
+        public String getPuntos() {
+            return puntos;
+        }
+
+        public String getMark() {
+            return mark;
         }
     }
 }

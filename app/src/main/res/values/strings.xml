@@ -2,7 +2,7 @@
     <string name="app_name">Divisions</string>
     <string name="title_home">Inicio</string>
     <string name="title_settings">Ajustes</string>
-    <string name="title_notifications">Notificationes</string>
+    <string name="title_notifications">Mi equipo</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="Welcome">Bienvenido</string>
     <string name="Login">Iniciar Sesión</string>
@@ -13,7 +13,6 @@
     <string name="Continue">Continuar</string>
     <string name="Saludo">Hola, elige tu equipo favorito</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="CambiarPass">Cambiar contraseña</string>
     <string name="CambiarUsu">Cambiar nombre usuario</string>
     <string name="CambiarCorreo">Cambiar correo</string>

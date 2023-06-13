@@ -14,11 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.divisions.databinding.FragmentSettingsBinding;
 import com.miguelangelmoreno.divisions.EditarBaseFragment;
 import com.example.divisions.R;
 import com.miguelangelmoreno.divisions.StartActivity;
+import com.miguelangelmoreno.divisions.ui.home.HomeFragment;
 
 public class SettingsFragment extends Fragment {
 
@@ -64,31 +66,25 @@ public class SettingsFragment extends Fragment {
         buttonUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().
-                        replace(R.id.Cambio2Layout, EditarBaseFragment.newInstance("Usuario")).
-                        addToBackStack(null).
-                        commit();
+                Bundle bundle = new Bundle();
+                bundle.putString("param","Usuario");
+                NavHostFragment.findNavController(SettingsFragment.this).navigate(R.id.action_navigation_dashboard_to_editarBaseFragment,bundle);
             }
         });
         buttonEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().
-                        replace(R.id.Cambio2Layout, EditarBaseFragment.newInstance("Email")).
-                        addToBackStack(null).
-                        commit();
+                Bundle bundle = new Bundle();
+                bundle.putString("param","Email");
+                NavHostFragment.findNavController(SettingsFragment.this).navigate(R.id.action_navigation_dashboard_to_editarBaseFragment,bundle);
             }
         });
         buttonPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().
-                        replace(R.id.Cambio2Layout, EditarBaseFragment.newInstance("Contraseña")).
-                        addToBackStack(null).
-                        commit();
+                Bundle bundle = new Bundle();
+                bundle.putString("param","Contraseña");
+                NavHostFragment.findNavController(SettingsFragment.this).navigate(R.id.action_navigation_dashboard_to_editarBaseFragment,bundle);
             }
         });
 
