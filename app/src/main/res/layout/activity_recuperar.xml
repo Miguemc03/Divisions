@@ -4,34 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.miguelangelmoreno.divisions.LoginActivity">
-
-    <Button
-        android:id="@+id/buttonContinueLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:text="@string/Continue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRecuperar" />
+    tools:context="com.miguelangelmoreno.divisions.RecuperarActivity">
 
     <EditText
-        android:id="@+id/editTextPasswordLogin"
+        android:id="@+id/editTextPasswordRecuperar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
         android:ems="10"
-        android:hint="@string/Password"
+        android:hint="Nueva contraseña"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmailLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextEmailRecuperar" />
 
     <EditText
-        android:id="@+id/editTextEmailLogin"
+        android:id="@+id/editTextEmailRecuperar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="216dp"
@@ -43,15 +32,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonRecuperar"
+        android:id="@+id/buttonSiguiente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Recuperar contraseña"
+        android:layout_marginTop="36dp"
+        android:text="Entrar"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordLogin" />
-
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordRecuperar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

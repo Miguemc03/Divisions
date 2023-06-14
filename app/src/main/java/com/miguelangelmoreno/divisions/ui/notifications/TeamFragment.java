@@ -74,6 +74,8 @@ public class TeamFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+        idEquipo = sharedPreferences.getString("equipo", "");
         tabLayout = view.findViewById(R.id.tabLayout2);
         viewPager2 = view.findViewById(R.id.viewPager2);
         textViewNombre = view.findViewById(R.id.textView13);
@@ -83,8 +85,7 @@ public class TeamFragment extends Fragment {
         myViewPagerAdapter = new PagerAdapter(getActivity());
         viewPager2.setAdapter(myViewPagerAdapter);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
-        idEquipo = sharedPreferences.getString("equipo", "369");
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -109,10 +110,10 @@ public class TeamFragment extends Fragment {
             }
         });
         DescargarDatos descargarDatos = new DescargarDatos();
-        descargarDatos.execute();
+        descargarDatos.execute(idEquipo);
     }
 
-    private class DescargarDatos extends AsyncTask<Void, Void, Void> {
+    private class DescargarDatos extends AsyncTask<String, Void, Void> {
         JSONObject jsonObject;
         String todo;
 
@@ -130,9 +131,11 @@ public class TeamFragment extends Fragment {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&tz=Europe/Madrid&format=json&req=team&id=" + idEquipo + "&ext=png";
-
+        protected Void doInBackground(String... strings) {
+            String equipo = strings[0];
+            equipo=equipo.split(" ")[0];
+            Log.v("EQUIPO",equipo);
+            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&tz=Europe/Madrid&format=json&req=team&id=" + equipo + "&ext=png";
             URL url;
             HttpURLConnection httpURLConnection;
             try {
@@ -161,6 +164,8 @@ public class TeamFragment extends Fragment {
                     Log.v("todo", todo);
 
                     JSONObject jsonObject2 = new JSONObject(todo);
+
+                    Log.v("jsonObject2",jsonObject2.toString());
                     jsonObject =jsonObject2.getJSONObject("team");
 
                     br.close();
@@ -180,9 +185,10 @@ public class TeamFragment extends Fragment {
         protected void onPostExecute(Void unused) {
 
             try {
+
                 String nombre = "", pais = "", escudo = "", color1 = "", color2 = "";
 
-                if (jsonObject.getString("fullName") != null) {
+                if (jsonObject.getString("fullName") != null && jsonObject.getString("fullName").compareTo("") !=0) {
                     nombre = jsonObject.getString("fullName");
                 }
                 Log.v("nombre",nombre);

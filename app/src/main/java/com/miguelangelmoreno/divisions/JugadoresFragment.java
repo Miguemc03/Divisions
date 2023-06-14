@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.divisions.R;
 import com.miguelangelmoreno.divisions.ui.home.ClasificacionFragment;
@@ -48,22 +49,25 @@ public class JugadoresFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_jugadores, container, false);
     }
+
     static final String APIKEY = "c6196c01e7c1d93932590f42beec9ef8";
     List<String> listaEquiposString = new ArrayList<>();
     List<Jugador> listaEquipos = new ArrayList<>();
     ListView listViewEquipos;
     ArrayList<Jugador> arrayEquipos = new ArrayList<>();
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listViewEquipos=view.findViewById(R.id.listViewJugadores);
+        listViewEquipos = view.findViewById(R.id.listViewJugadores);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
-        idEquipo = sharedPreferences.getString("equipo", "369");
+        idEquipo = sharedPreferences.getString("equipo", null);
         DescargarEquipos descargarEquipos = new DescargarEquipos();
         descargarEquipos.execute();
     }
+
     private class DescargarEquipos extends AsyncTask<Void, Void, Void> {
-        JSONObject jsonObject;
+        JSONArray jsonArray;
         String todo;
 
         ProgressDialog progreso;
@@ -111,31 +115,36 @@ public class JugadoresFragment extends Fragment {
                     Log.v("todo", todo);
 
                     JSONObject jsonObject2 = new JSONObject(todo);
-                    JSONArray jsonArray =jsonObject2.getJSONObject("team").getJSONArray("squad");
-                    Log.v("jsonArray",jsonArray.toString());
+                    jsonArray = jsonObject2.getJSONObject("team").getJSONArray("squad");
+                    Log.v("jsonArray", jsonArray.toString());
                     listaEquipos.clear();
                     listaEquiposString.clear();
                     try {
-                        String nombre = "", imagen = "", numero = "";
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            if (jsonArray.getJSONObject(i).getString("nick") != null) {
-                                nombre = jsonArray.getJSONObject(i).getString("nick");
-                            }
-                            if (jsonArray.getJSONObject(i).getString("image") != null) {
-                                imagen = jsonArray.getJSONObject(i).getString("image");
+                        if (jsonArray.length() != 0) {
+
+
+                            String nombre = "", imagen = "", numero = "";
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                if (jsonArray.getJSONObject(i).getString("title") != null) {
+                                    nombre = jsonArray.getJSONObject(i).getString("title");
+                                }
+                                if (jsonArray.getJSONObject(i).getString("image") != null) {
+                                    imagen = jsonArray.getJSONObject(i).getString("image");
+
+                                }
+                                if (jsonArray.getJSONObject(i).get("squad_number") != null) {
+                                    numero = jsonArray.getJSONObject(i).get("squad_number") + "";
+
+                                }
+                                Jugador equipos = new Jugador(nombre, imagen, numero);
+                                listaEquiposString.add(nombre);
+                                listaEquipos.add(equipos);
+                                arrayEquipos.add(equipos);
+
 
                             }
-                            if (jsonArray.getJSONObject(i).get("squadNumber") != null) {
-                                numero = jsonArray.getJSONObject(i).get("squadNumber") + "";
-
-                            }
-                            Jugador equipos = new Jugador(nombre,imagen,numero);
-                            listaEquiposString.add(nombre);
-                            listaEquipos.add(equipos);
-                            arrayEquipos.add(equipos);
-
-
                         }
+
                     } catch (JSONException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -156,10 +165,12 @@ public class JugadoresFragment extends Fragment {
         protected void onPostExecute(Void unused) {
 
 
-
-
-            AdaptadorEquipos adaptadorEquipos = new AdaptadorEquipos(getContext(), R.layout.jugadores, listaEquiposString);
-            listViewEquipos.setAdapter(adaptadorEquipos);
+            if (jsonArray.length() > 0) {
+                AdaptadorEquipos adaptadorEquipos = new AdaptadorEquipos(getContext(), R.layout.jugadores, listaEquiposString);
+                listViewEquipos.setAdapter(adaptadorEquipos);
+            } else {
+                Toast.makeText(getContext(), "No hay jugadores", Toast.LENGTH_SHORT).show();
+            }
 
 
             progreso.dismiss();
@@ -167,6 +178,7 @@ public class JugadoresFragment extends Fragment {
 
 
     }
+
     private class AdaptadorEquipos extends ArrayAdapter<String> {
 
         public AdaptadorEquipos(@NonNull Context context, int resource, List<String> lista) {
@@ -195,6 +207,7 @@ public class JugadoresFragment extends Fragment {
             return miFila;
         }
     }
+
     class Jugador {
         String nombre;
         String imagen;

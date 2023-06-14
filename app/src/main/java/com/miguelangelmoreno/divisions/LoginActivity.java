@@ -222,9 +222,70 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("usuario", usuario);
             editor.commit();
 
+            ObtenerEquipo obtenerEquipo = new ObtenerEquipo();
+            obtenerEquipo.execute();
+
+
+        }
+    }
+
+    private class ObtenerEquipo extends AsyncTask<Void, Void, Void> {
+        String equipo = "";
+        ProgressDialog progreso;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progreso = new ProgressDialog(LoginActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage("Cargando");
+            progreso.setProgress(0);
+            progreso.setCancelable(false);
+            progreso.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+
+            String ruta = "https://miguedb.000webhostapp.com/GetTeam.php?correo=" + editextEmail.getText();
+            URL url;
+            HttpURLConnection httpURLConnection;
+            try {
+                url = new URL(ruta);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    String linea = "";
+                    while ((linea = br.readLine()) != null) {
+                        equipo += linea + "\n";
+
+                    }
+                }
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return null;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            Log.v("equipo",equipo);
+
+            SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("equipo", equipo);
+            editor.commit();
+
             ComprobarToken comprobarToken = new ComprobarToken();
             comprobarToken.execute();
-
+            progreso.dismiss();
 
         }
     }
@@ -278,8 +339,8 @@ public class LoginActivity extends AppCompatActivity {
             super.onPostExecute(unused);
 
             SharedPreferences sharedPreferences = getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
-            String tokenBueno=sharedPreferences.getString("DEVICEID", null);
-            Log.v("tokenBueno",tokenBueno+"");
+            String tokenBueno = sharedPreferences.getString("DEVICEID", null);
+            Log.v("tokenBueno", tokenBueno + "");
             if (tokenBueno.compareTo(token) != 0) {
 
                 CambiarToken cambiarToken = new CambiarToken();
@@ -287,7 +348,7 @@ public class LoginActivity extends AppCompatActivity {
             } else {
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                token=sharedPreferences.getString("DEVICEID", null);
+                token = sharedPreferences.getString("DEVICEID", null);
                 editor.putBoolean("inicio", true);
                 editor.putString("correo", editextEmail.getText().toString());
                 editor.commit();
@@ -318,10 +379,10 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... strings) {
             String token = strings[0];
-            String ruta = "https://miguedb.000webhostapp.com/CambiarToken.php?correo=" + editextEmail.getText()+"&token="+token;
+            String ruta = "https://miguedb.000webhostapp.com/CambiarToken.php?correo=" + editextEmail.getText() + "&token=" + token;
             URL url;
             HttpURLConnection httpURLConnection;
-            Log.v("token",token);
+            Log.v("token", token);
 
             try {
                 url = new URL(ruta);
