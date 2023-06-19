@@ -117,7 +117,6 @@ public class InformationFragment extends Fragment {
 
                     Log.v("todo", todo);
                     Log.v("palabra", palabra);
-                    Log.v("todo", todo);
 
                     JSONObject jsonObject2 = new JSONObject(todo);
                     jsonObject2 = jsonObject2.getJSONObject("team");

@@ -48,7 +48,7 @@
 
     <ListView
         android:id="@+id/ListViewClasificacion"
-        android:layout_width="359dp"
+        android:layout_width="match_parent"
         android:layout_height="528dp"
         android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="parent"

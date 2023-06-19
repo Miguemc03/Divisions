@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.divisions.R;
 import com.miguelangelmoreno.divisions.ui.dashboard.SettingsFragment;
@@ -86,7 +87,7 @@ public class EditarBaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mParam1=getArguments().getString("param");
+        mParam1 = getArguments().getString("param");
         editTextCambiarDatos = view.findViewById(R.id.editTextCambiarDatos);
         buttonCambiarDatos = view.findViewById(R.id.buttonCambiarDatos);
         editTextCambiarDatos.setHint(mParam1);
@@ -119,7 +120,7 @@ public class EditarBaseFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(getContext());
+            progreso = new ProgressDialog(getContext());
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
@@ -130,29 +131,32 @@ public class EditarBaseFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             Log.v("usuario", usuario);
+            if (editTextCambiarDatos.getText().toString().compareTo("") != 0) {
+                String ruta = "https://miguedb.000webhostapp.com/CambiarPassword.php?password=" + editTextCambiarDatos.getText() + "&usuario=" + usuario;
+                URL url;
+                HttpURLConnection httpURLConnection;
+                try {
+                    url = new URL(ruta);
+                    httpURLConnection = (HttpURLConnection) url.openConnection();
+                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String todo = "";
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                        String linea = "";
+                        while ((linea = br.readLine()) != null) {
+                            todo += linea + "\n";
 
-            String ruta = "https://miguedb.000webhostapp.com/CambiarPassword.php?password=" + editTextCambiarDatos.getText() + "&usuario=" + usuario;
-            URL url;
-            HttpURLConnection httpURLConnection;
-            try {
-                url = new URL(ruta);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    String todo = "";
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                    String linea = "";
-                    while ((linea = br.readLine()) != null) {
-                        todo += linea + "\n";
-
+                        }
+                        Log.v("todo", todo);
                     }
-                    Log.v("todo", todo);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
+
+
             return null;
 
 
@@ -162,8 +166,11 @@ public class EditarBaseFragment extends Fragment {
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
             progreso.dismiss();
-            NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
-
+            if (editTextCambiarDatos.getText().toString().compareTo("") != 0) {
+                NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
+            } else {
+                Toast.makeText(getContext(), "El campo no puede estar vacio", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -175,7 +182,7 @@ public class EditarBaseFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(getContext());
+            progreso = new ProgressDialog(getContext());
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
@@ -185,30 +192,33 @@ public class EditarBaseFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String ruta = "https://miguedb.000webhostapp.com/CambiarUsuario.php?password=" + editTextCambiarDatos.getText() + "&correo=" + correo;
-            URL url;
-            HttpURLConnection httpURLConnection;
-            try {
-                url = new URL(ruta);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (editTextCambiarDatos.getText().toString().compareTo("") != 0) {
 
-                    String todo = "";
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                    String linea = "";
-                    while ((linea = br.readLine()) != null) {
-                        todo += linea + "\n";
+                String ruta = "https://miguedb.000webhostapp.com/CambiarUsuario.php?password=" + editTextCambiarDatos.getText() + "&correo=" + correo;
+                URL url;
+                HttpURLConnection httpURLConnection;
+                try {
+                    url = new URL(ruta);
+                    httpURLConnection = (HttpURLConnection) url.openConnection();
+                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 
+                        String todo = "";
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                        String linea = "";
+                        while ((linea = br.readLine()) != null) {
+                            todo += linea + "\n";
+
+                        }
+                        Log.v("todo", todo);
                     }
-                    Log.v("todo", todo);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
-            return null;
+                return null;
 
 
         }
@@ -217,12 +227,16 @@ public class EditarBaseFragment extends Fragment {
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
             progreso.dismiss();
-            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("inicio", true);
-            editor.putString("usuario", editTextCambiarDatos.getText().toString());
-            editor.commit();
-            NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
+            if (editTextCambiarDatos.getText().toString().compareTo("") != 0) {
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("inicio", true);
+                editor.putString("usuario", editTextCambiarDatos.getText().toString());
+                editor.commit();
+                NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
+            } else {
+                Toast.makeText(getContext(), "El campo no puede estar vacio", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -234,7 +248,7 @@ public class EditarBaseFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progreso= new ProgressDialog(getContext());
+            progreso = new ProgressDialog(getContext());
             progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progreso.setMessage("Cargando");
             progreso.setProgress(0);
@@ -244,28 +258,31 @@ public class EditarBaseFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String ruta = "https://miguedb.000webhostapp.com/CambiarEmail.php?password=" + editTextCambiarDatos.getText() + "&usuario=" + usuario;
-            URL url;
-            HttpURLConnection httpURLConnection;
-            try {
-                url = new URL(ruta);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    String todo = "";
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                    String linea = "";
-                    while ((linea = br.readLine()) != null) {
-                        todo += linea + "\n";
+            if (editTextCambiarDatos.getText().toString().compareTo("") != 0) {
+
+                String ruta = "https://miguedb.000webhostapp.com/CambiarEmail.php?password=" + editTextCambiarDatos.getText() + "&usuario=" + usuario;
+                URL url;
+                HttpURLConnection httpURLConnection;
+                try {
+                    url = new URL(ruta);
+                    httpURLConnection = (HttpURLConnection) url.openConnection();
+                    if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        String todo = "";
+                        InputStream inputStream = httpURLConnection.getInputStream();
+                        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                        String linea = "";
+                        while ((linea = br.readLine()) != null) {
+                            todo += linea + "\n";
+
+                        }
+                        Log.v("todo", todo);
 
                     }
-                    Log.v("todo", todo);
-
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
             return null;
 
@@ -276,12 +293,16 @@ public class EditarBaseFragment extends Fragment {
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
             progreso.dismiss();
-            SharedPreferences sharedPreferences = getContext().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("inicio", true);
-            editor.putString("correo", editTextCambiarDatos.getText().toString());
-            editor.commit();
-            NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
+            if (editTextCambiarDatos.getText().toString().compareTo("") != 0) {
+                SharedPreferences sharedPreferences = getContext().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("inicio", true);
+                editor.putString("correo", editTextCambiarDatos.getText().toString());
+                editor.commit();
+                NavHostFragment.findNavController(EditarBaseFragment.this).navigate(R.id.action_editarBaseFragment_to_navigation_dashboard);
+            } else {
+                Toast.makeText(getContext(), "El campo no puede estar vacio", Toast.LENGTH_LONG).show();
+            }
         }
     }
 

@@ -62,6 +62,7 @@ public class JugadoresFragment extends Fragment {
         listViewEquipos = view.findViewById(R.id.listViewJugadores);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Mis preferencias", Context.MODE_PRIVATE);
         idEquipo = sharedPreferences.getString("equipo", null);
+        idEquipo=idEquipo.split(" ")[0];
         DescargarEquipos descargarEquipos = new DescargarEquipos();
         descargarEquipos.execute();
     }
@@ -85,7 +86,7 @@ public class JugadoresFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&tz=Europe/Madrid&format=json&req=team&id=" + idEquipo + "&ext=png";
+            String ruta = "https://apiclient.besoccerapps.com/scripts/api/api.php?key=" + APIKEY + "&tz=Europe/Madrid&format=json&req=team&id=" + idEquipo.split(" ")[0] + "&ext=png";
 
             URL url;
             HttpURLConnection httpURLConnection;
@@ -125,15 +126,15 @@ public class JugadoresFragment extends Fragment {
 
                             String nombre = "", imagen = "", numero = "";
                             for (int i = 0; i < jsonArray.length(); i++) {
-                                if (jsonArray.getJSONObject(i).getString("title") != null) {
-                                    nombre = jsonArray.getJSONObject(i).getString("title");
+                                if (jsonArray.getJSONObject(i).getString("nick") != null) {
+                                    nombre = jsonArray.getJSONObject(i).getString("nick");
                                 }
                                 if (jsonArray.getJSONObject(i).getString("image") != null) {
                                     imagen = jsonArray.getJSONObject(i).getString("image");
 
                                 }
-                                if (jsonArray.getJSONObject(i).get("squad_number") != null) {
-                                    numero = jsonArray.getJSONObject(i).get("squad_number") + "";
+                                if (jsonArray.getJSONObject(i).get("squadNumber") != null) {
+                                    numero = jsonArray.getJSONObject(i).get("squadNumber") + "";
 
                                 }
                                 Jugador equipos = new Jugador(nombre, imagen, numero);
