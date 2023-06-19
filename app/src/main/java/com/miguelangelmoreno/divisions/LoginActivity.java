@@ -35,7 +35,7 @@ import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
     EditText editextEmail, editTextPassword;
-    Button buttonContinue;
+    Button buttonContinue,buttonRecuperar;
     static final String SERVIDOR = "https://miguedb.000webhostapp.com/";
 
     @Override
@@ -46,6 +46,14 @@ public class LoginActivity extends AppCompatActivity {
         editextEmail = findViewById(R.id.editTextEmailLogin);
         editTextPassword = findViewById(R.id.editTextPasswordLogin);
         buttonContinue = findViewById(R.id.buttonContinueLogin);
+        buttonRecuperar = findViewById(R.id.buttonRecuperar);
+        buttonRecuperar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent recu = new Intent(LoginActivity.this, RecuperarActivity.class);
+                startActivity(recu);
+            }
+        });
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
